@@ -6,9 +6,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Hashtable;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import com.jclient.models.Route;
 import com.jclient.models.responses.SignInResponse;
@@ -24,10 +28,14 @@ public class HTTPClient {
     private static final HttpClient httpClient = HttpClient.newHttpClient();
 
     // ObjectMapper retutilizable
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     public SignInResponse signIn(SignInRequest payload) throws IOException, InterruptedException {
         String jsonRequest = objectMapper.writeValueAsString(payload);
+
+
+
 
         System.out.println(jsonRequest);
         System.out.println(Route.signIn().toString());

@@ -1,5 +1,7 @@
 package com.jclient.views;
 
+
+import com.jclient.views.MenuView;
 import com.jclient.clients.HTTPClient;
 // import com.jclient.models.AuthenticationResponse;
 import com.jclient.models.requests.SignInRequest;
@@ -143,7 +145,8 @@ public class SignInView {
                         "Éxito",
                         JOptionPane.INFORMATION_MESSAGE);
                 frame.dispose();
-                // new MenuView().setVisible(true); // si tienes otra pantalla
+
+                new MenuView();
 
             } catch (IOException | InterruptedException ex) {
                 ex.printStackTrace();
