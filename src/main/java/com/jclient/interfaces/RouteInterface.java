@@ -1,4 +1,4 @@
-package com.jclient.models.interfaces;
+package com.jclient.interfaces;
 
 public interface RouteInterface {
     String apiUrl = System.getenv().getOrDefault("API_URL", "http://192.168.1.85:7500/api/v1");

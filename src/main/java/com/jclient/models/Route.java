@@ -1,6 +1,6 @@
 package com.jclient.models;
 
-import com.jclient.models.interfaces.RouteInterface;
+import com.jclient.interfaces.RouteInterface;
 import java.net.URI;
 
 

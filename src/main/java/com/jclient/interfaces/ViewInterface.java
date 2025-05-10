@@ -1,4 +1,4 @@
-package com.jclient.models.interfaces;
+package com.jclient.interfaces;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -20,9 +20,9 @@ public interface ViewInterface {
     Color primaryBackgroundColor = new Color(250, 250, 250);
     Color secondaryBackgroundColor = new Color(192, 192, 192);
 
-
     Color textFieldBorderColor = new Color(36, 114, 200);
     Color textFieldFontColor = new Color(36, 114, 200);
+
     Color primaryLabelTextColor = new Color(0, 0, 0);
 
     Color primaryButtonBaseColor = new Color(60, 60, 60);

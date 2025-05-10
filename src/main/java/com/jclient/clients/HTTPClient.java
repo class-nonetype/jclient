@@ -16,6 +16,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import com.jclient.models.Route;
 import com.jclient.models.requests.SessionRequest;
+import com.jclient.models.responses.SessionResponse;
 import com.jclient.models.responses.SignInResponse;
 import com.jclient.models.requests.SignInRequest;
 import java.io.IOException;
@@ -74,7 +75,7 @@ public class HTTPClient {
         }
     }
 
-    public SignInResponse verifySession(String token) throws IOException, InterruptedException {
+    public SessionResponse verifySession(String token) throws IOException, InterruptedException {
         String encodedToken = URLEncoder.encode(token, StandardCharsets.UTF_8);
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -90,7 +91,7 @@ public class HTTPClient {
         );
 
         if (resp.statusCode() == 200) {
-            return objectMapper.readValue(resp.body(), SignInResponse.class);
+            return objectMapper.readValue(resp.body(), SessionResponse.class);
         } else {
             throw new RuntimeException("Error verificando sesión: HTTP " + resp.statusCode());
         }

@@ -1,8 +1,12 @@
 package com.jclient.views;
 
 import com.jclient.clients.HTTPClient;
+
+import com.jclient.controllers.RequestController;
 import com.jclient.models.requests.SignInRequest;
+import com.jclient.models.responses.SessionResponse;
 import com.jclient.models.responses.SignInResponse;
+import com.jclient.interfaces.ViewInterface;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -14,107 +18,134 @@ import java.util.prefs.Preferences;
 
 public class SignInView {
 
-    private static final int frameWidth = 680;
-    private static final int frameHeight = 400;
+    private JFrame frame;
+    private JPanel logoPanel;
+    private JLabel usernameLabel;
+    private JTextField usernameTextField;
+    private JLabel passwordLabel;
+    private JPasswordField passwordField;
+    private JCheckBox rememberMe;
+    private JButton signInButton;
 
-    private static final String backgroundColor = "#FAFAFA";
 
-    // Colores
-    private static final Color textFieldBorderColor = new Color(36, 114, 200);
-    private static final Color textFieldFontColor = new Color(36, 114, 200);
-    private static final Color labelTextColor = new Color(0, 0, 0);
-
-    private static final Color buttonBaseColor = new Color(60, 60, 60);
-    private static final Color buttonHoverColor = new Color(90, 90, 90);
-
-    // Bordes y fuente
-    private static final MatteBorder textFieldBorder = BorderFactory.createMatteBorder(
-            0, 0, 2, 0, textFieldBorderColor
-    );
-    private static final Font textFieldFont = new Font("Segoe UI", Font.PLAIN, 12);
-    private static final Font labelTextFont = new Font("Segoe UI", Font.PLAIN, 15);
 
     public SignInView() {
-        // Ventana principal
-        JFrame frame = new JFrame("Iniciar sesión");
+        buildUI();
+
+        // Mostrar ventana
+        frame.setVisible(true);
+    }
+
+    private void verifySession(){
+        Preferences prefs = Preferences.userNodeForPackage(SignInView.class);
+        boolean wasRemembered = prefs.getBoolean("rememberMe", false);
+
+        if (wasRemembered) {
+            String token = prefs.get("userAccessToken", null);
+            if (token != null) {
+                HTTPClient httpClient = new HTTPClient();
+                try {
+                    SessionResponse session = httpClient.verifySession(token);
+                    if (session.token() != null) {
+                        frame.dispose();
+                        new MenuView();
+                        return;
+                    } else {
+                        // token inválido: limpiar prefs
+                        prefs.remove("userAccessToken");
+                        prefs.putBoolean("rememberMe", false);
+                    }
+                } catch (IOException | InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+
+    private void buildUI(){
+        // Contenedor
+        frame = new JFrame("Inicia sesión");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(frameWidth, frameHeight);
+        frame.setSize(ViewInterface.signInWindowWidth, ViewInterface.signInWindowHeight);
         frame.setLayout(null);
-        frame.getContentPane().setBackground(Color.decode(backgroundColor));
+        frame.getContentPane().setBackground(ViewInterface.primaryBackgroundColor);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
 
-        // Panel lateral para logo
-        JPanel logoPanel = new JPanel();
-        logoPanel.setBounds(0, 0, 350, frameHeight);
-        logoPanel.setBackground(Color.LIGHT_GRAY);
+        MessageView messageView = new MessageView(frame);
+
+
+        logoPanel = new JPanel();
+        logoPanel.setBounds(0, 0, 350, ViewInterface.signInWindowHeight);
+        logoPanel.setBackground(ViewInterface.secondaryBackgroundColor);
         logoPanel.setLayout(null);
         frame.add(logoPanel);
 
-        // Label y campo de usuario
-        JLabel usernameLabel = new JLabel("Usuario");
+        usernameLabel = new JLabel("Usuario");
         usernameLabel.setBounds(400, 60, 240, 15);
-        usernameLabel.setForeground(labelTextColor);
-        usernameLabel.setFont(labelTextFont);
+        usernameLabel.setForeground(ViewInterface.primaryLabelTextColor);
+        usernameLabel.setFont(ViewInterface.primaryLabelTextFont);
         frame.add(usernameLabel);
 
-        JTextField usernameTextField = new JTextField();
+        usernameTextField = new JTextField();
         usernameTextField.setBounds(400, 80, 240, 25);
         usernameTextField.setOpaque(false);
         usernameTextField.setBackground(new Color(0, 0, 0, 0));
-        usernameTextField.setForeground(textFieldFontColor);
+        usernameTextField.setForeground(ViewInterface.textFieldFontColor);
         usernameTextField.setHorizontalAlignment(JTextField.CENTER);
-        usernameTextField.setFont(textFieldFont);
-        usernameTextField.setBorder(textFieldBorder);
-        usernameTextField.setCaretColor(textFieldFontColor);
-        frame.add(usernameTextField);
-
-        // Efecto hover en input usuario
+        usernameTextField.setFont(ViewInterface.textFieldFont);
+        usernameTextField.setBorder(ViewInterface.textFieldBorder);
+        usernameTextField.setCaretColor(ViewInterface.textFieldFontColor);
         usernameTextField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 usernameTextField.setBorder(BorderFactory.createMatteBorder(
-                        0, 0, 2, 0, buttonHoverColor));
+                        0, 0, 2, 0, ViewInterface.primaryButtonHoverColor));
             }
             @Override
             public void mouseExited(MouseEvent e) {
-                usernameTextField.setBorder(textFieldBorder);
+                usernameTextField.setBorder(ViewInterface.textFieldBorder);
             }
         });
+        frame.add(usernameTextField);
+
+
 
         // Label y campo de contraseña
-        JLabel passwordLabel = new JLabel("Contraseña");
+        passwordLabel = new JLabel("Contraseña");
         passwordLabel.setBounds(400, 140, 240, 15);
-        passwordLabel.setForeground(labelTextColor);
-        passwordLabel.setFont(labelTextFont);
+        passwordLabel.setForeground(ViewInterface.primaryLabelTextColor);
+        passwordLabel.setFont(ViewInterface.primaryLabelTextFont);
         frame.add(passwordLabel);
 
-        JPasswordField passwordField = new JPasswordField();
+        passwordField = new JPasswordField();
         passwordField.setBounds(400, 160, 240, 25);
         passwordField.setOpaque(false);
         passwordField.setBackground(new Color(0, 0, 0, 0));
-        passwordField.setForeground(textFieldFontColor);
+        passwordField.setForeground(ViewInterface.textFieldFontColor);
         passwordField.setHorizontalAlignment(JTextField.CENTER);
-        passwordField.setFont(textFieldFont);
-        passwordField.setBorder(textFieldBorder);
-        passwordField.setCaretColor(textFieldFontColor);
-        frame.add(passwordField);
-
-        // Efecto hover en input contraseña
+        passwordField.setFont(ViewInterface.textFieldFont);
+        passwordField.setBorder(ViewInterface.textFieldBorder);
+        passwordField.setCaretColor(ViewInterface.textFieldFontColor);
         passwordField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 passwordField.setBorder(BorderFactory.createMatteBorder(
-                        0, 0, 2, 0, buttonHoverColor));
+                        0, 0, 2, 0, ViewInterface.primaryButtonHoverColor));
             }
             @Override
             public void mouseExited(MouseEvent e) {
-                passwordField.setBorder(textFieldBorder);
+                passwordField.setBorder(ViewInterface.textFieldBorder);
             }
         });
+        frame.add(passwordField);
+
+
 
         // Opción "Mantener sesión" como JRadioButton plano Material UI
-        JRadioButton rememberMe = new JRadioButton("Recuérdame");
+        rememberMe = new JCheckBox("Recuérdame");
         rememberMe.setBounds(400, 200, 240, 20);
         rememberMe.setOpaque(false);
         rememberMe.setFocusPainted(false);
@@ -122,17 +153,16 @@ public class SignInView {
         rememberMe.setContentAreaFilled(false);
         rememberMe.setFocusable(false);
         rememberMe.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        rememberMe.setFont(labelTextFont);
-        rememberMe.setForeground(labelTextColor);
-
+        rememberMe.setFont(ViewInterface.primaryLabelTextFont);
+        rememberMe.setForeground(ViewInterface.primaryLabelTextColor);
         rememberMe.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                rememberMe.setForeground(buttonHoverColor);
+                rememberMe.setForeground(ViewInterface.primaryButtonHoverColor);
             }
             @Override
             public void mouseExited(MouseEvent e) {
-                rememberMe.setForeground(labelTextColor);
+                rememberMe.setForeground(ViewInterface.primaryLabelTextColor);
             }
         });
 
@@ -140,40 +170,41 @@ public class SignInView {
 
 
         // Botón "Iniciar sesión"
-        JButton signInButton = new JButton("Iniciar sesión");
-        signInButton.setBounds(400, 260, 240, 30);
+        signInButton = new JButton("Iniciar sesión");
+
         signInButton.setFocusPainted(false);
         signInButton.setBorderPainted(false);
         signInButton.setContentAreaFilled(false);
         signInButton.setOpaque(true);
-        signInButton.setBackground(buttonBaseColor);
+        signInButton.setBackground(ViewInterface.primaryButtonBaseColor);
         signInButton.setForeground(Color.WHITE);
-        // Efecto hover en botón
         signInButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                signInButton.setBackground(buttonHoverColor);
+                signInButton.setBackground(ViewInterface.primaryButtonHoverColor);
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                signInButton.setBackground(buttonBaseColor);
+                signInButton.setBackground(ViewInterface.primaryButtonBaseColor);
             }
         });
+
 
         signInButton.addActionListener(e -> {
             String username = usernameTextField.getText();
             String password = new String(passwordField.getPassword());
             if (username.isBlank() || password.isBlank()) {
-                JOptionPane.showMessageDialog(frame,
+                messageView.showWarningDialog(
                         "Por favor completa todos los campos",
-                        "Atención",
-                        JOptionPane.WARNING_MESSAGE);
+                        "Atención"
+                );
                 return;
             }
-            HTTPClient httpClient = new HTTPClient();
-            SignInRequest payload = new SignInRequest(username, password);
+
+            RequestController requestController = new RequestController();
+
             try {
-                SignInResponse signInResponse = httpClient.signIn(payload);
+                SignInResponse signInResponse = requestController.signIn(username, password);
 
                 Preferences prefs = Preferences.userNodeForPackage(SignInView.class);
                 if (rememberMe.isSelected()) {
@@ -184,12 +215,14 @@ public class SignInView {
                     prefs.putBoolean("rememberMe", false);
                 }
 
-                JOptionPane.showMessageDialog(frame,
-                        "Bienvenido " + username + (rememberMe.isSelected() ? "\nSesión guardada." : ""),
-                        "Éxito",
-                        JOptionPane.INFORMATION_MESSAGE);
+
+
+                messageView.showInfoDialog(username + (rememberMe.isSelected() ? "\nSesión guardada." : ""), "Exito");
+
+
                 frame.dispose();
                 new MenuView();
+
             } catch (IOException | InterruptedException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(frame,
@@ -198,13 +231,20 @@ public class SignInView {
                         JOptionPane.ERROR_MESSAGE);
             }
         });
+
+        // Opcional
+        rememberMe.setVisible(false);
+        if (!rememberMe.isShowing()){
+            signInButton.setBounds(400, 250, 240, 42);
+
+        } else {
+            signInButton.setBounds(400, 260, 240, 42);
+        }
+        //
+
         frame.add(signInButton);
-
-        // Mostrar ventana
-        frame.setVisible(true);
     }
 
-    private boolean buildUI() {
-        return true;
-    }
+
+
 }
