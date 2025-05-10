@@ -112,9 +112,35 @@ public class SignInView {
             }
         });
 
+        // Opción "Mantener sesión" como JRadioButton plano Material UI
+        JRadioButton rememberMe = new JRadioButton("Recuérdame");
+        rememberMe.setBounds(400, 200, 240, 20);
+        rememberMe.setOpaque(false);
+        rememberMe.setFocusPainted(false);
+        rememberMe.setBorderPainted(false);
+        rememberMe.setContentAreaFilled(false);
+        rememberMe.setFocusable(false);
+        rememberMe.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        rememberMe.setFont(labelTextFont);
+        rememberMe.setForeground(labelTextColor);
+
+        rememberMe.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                rememberMe.setForeground(buttonHoverColor);
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                rememberMe.setForeground(labelTextColor);
+            }
+        });
+
+        frame.add(rememberMe);
+
+
         // Botón "Iniciar sesión"
         JButton signInButton = new JButton("Iniciar sesión");
-        signInButton.setBounds(400, 220, 240, 30);
+        signInButton.setBounds(400, 260, 240, 30);
         signInButton.setFocusPainted(false);
         signInButton.setBorderPainted(false);
         signInButton.setContentAreaFilled(false);
@@ -147,16 +173,12 @@ public class SignInView {
             SignInRequest payload = new SignInRequest(username, password);
             try {
                 SignInResponse signInResponse = httpClient.signIn(payload);
-
-                if (signInResponse.token() != null) {
-                    JOptionPane.showMessageDialog(frame,
-                            "Bienvenido " + username,
-                            "Éxito",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    frame.dispose();
-                    new MenuView();
-                }
-
+                JOptionPane.showMessageDialog(frame,
+                        "Bienvenido " + username + (rememberMe.isSelected() ? "\nSesión guardada." : ""),
+                        "Éxito",
+                        JOptionPane.INFORMATION_MESSAGE);
+                frame.dispose();
+                new MenuView();
             } catch (IOException | InterruptedException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(frame,
