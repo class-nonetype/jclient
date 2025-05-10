@@ -206,23 +206,26 @@ public class SignInView {
 
             try {
                 SignInResponse signInResponse = requestController.signIn(username, password);
+                if (signInResponse.token() != null) {
+                    Preferences prefs = Preferences.userNodeForPackage(SignInView.class);
+                    if (rememberMe.isSelected()) {
+                        prefs.put("userAccessToken", signInResponse.token());
+                        prefs.putBoolean("rememberMe", true);
+                    } else {
+                        prefs.remove("userAccessToken");
+                        prefs.putBoolean("rememberMe", false);
+                    }
 
-                Preferences prefs = Preferences.userNodeForPackage(SignInView.class);
-                if (rememberMe.isSelected()) {
-                    prefs.put("userAccessToken", signInResponse.token());
-                    prefs.putBoolean("rememberMe", true);
-                } else {
-                    prefs.remove("userAccessToken");
-                    prefs.putBoolean("rememberMe", false);
+
+
+                    messageView.showInfoDialog(username + (rememberMe.isSelected() ? "\nSesión guardada." : ""), "Exito");
+
+
+                    frame.dispose();
+                    new MenuView();
                 }
 
 
-
-                messageView.showInfoDialog(username + (rememberMe.isSelected() ? "\nSesión guardada." : ""), "Exito");
-
-
-                frame.dispose();
-                new MenuView();
 
             } catch (IOException | InterruptedException ex) {
                 ex.printStackTrace();
