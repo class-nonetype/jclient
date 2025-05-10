@@ -27,12 +27,13 @@ public class SignInView {
     private JCheckBox rememberMe;
     private JButton signInButton;
 
+    private MessageView messageView;
+
 
 
     public SignInView() {
         buildUI();
 
-        // Mostrar ventana
         frame.setVisible(true);
     }
 
@@ -74,7 +75,7 @@ public class SignInView {
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
 
-        MessageView messageView = new MessageView(frame);
+        messageView = new MessageView(frame);
 
 
         logoPanel = new JPanel();
