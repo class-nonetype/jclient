@@ -43,9 +43,6 @@ public class HTTPClient {
     public SignInResponse signIn(SignInRequest payload) throws IOException, InterruptedException {
         String jsonPayload = objectMapper.writeValueAsString(payload);
 
-
-
-
         System.out.println("[request] " + jsonPayload);
         System.out.println("[route] " + Route.signIn().toString());
 
@@ -78,23 +75,27 @@ public class HTTPClient {
     }
 
     public SignInResponse verifySession(String token) throws IOException, InterruptedException {
-        // Construye la URL con el token como query param
-        String encoded = URLEncoder.encode(token, StandardCharsets.UTF_8);
-        URI uri = URI.create(Route.verifySession() + "?Authorization=" + encoded);
+        String encodedToken = URLEncoder.encode(token, StandardCharsets.UTF_8);
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
+                .uri(URI.create(Route.verifySession().toString() + "?Authorization=" + encodedToken))
                 .header("Accept", "application/json")
-                .POST(HttpRequest.BodyPublishers.noBody())  // POST sin body
+                .header("Authorization", "Bearer " + token)
+                .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        HttpResponse<String> resp = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> resp = httpClient.send(
+                request,
+                HttpResponse.BodyHandlers.ofString()
+        );
+
         if (resp.statusCode() == 200) {
             return objectMapper.readValue(resp.body(), SignInResponse.class);
         } else {
             throw new RuntimeException("Error verificando sesión: HTTP " + resp.statusCode());
         }
     }
+
 
 
 
