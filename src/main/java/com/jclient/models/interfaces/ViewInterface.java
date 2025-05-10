@@ -9,7 +9,16 @@ public interface ViewInterface {
     int signInWindowWidth = 680;
     int signInWindowHeight = 400;
 
-    String primaryBackgroundColor = "#FAFAFA";
+    int menuWindowWidth = 0;
+    int menuWindowHeight = 0;
+
+    int clientFormWindowWidth = 0;
+    int clientFormWindowHeight = 0;
+
+    Color primaryBackgroundColor = new Color(250, 250, 250);
+    Color secondaryBackgroundColor = new Color(192, 192, 192);
+
+
     Color textFieldBorderColor = new Color(36, 114, 200);
     Color textFieldFontColor = new Color(36, 114, 200);
     Color labelTextColor = new Color(0, 0, 0);

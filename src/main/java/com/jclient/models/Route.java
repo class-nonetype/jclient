@@ -6,22 +6,16 @@ import java.net.URI;
 
 public class Route {
 
-    private static boolean verifyEnvironmentVariable() {
-        String environmentVariable = System.getenv("API_URL");
-
-        return environmentVariable != null && !environmentVariable.isBlank();
-    }
-
     public static URI signIn() {
-        return URI.create(RouteInterface.SIGN_IN);
+        return URI.create(RouteInterface.signInUrl);
     }
 
     public static URI signUp() {
-        return URI.create(RouteInterface.SIGN_UP);
+        return URI.create(RouteInterface.signUpUrl);
     }
 
     public static URI verifySession() {
-        return URI.create(RouteInterface.VERIFY_SESSION);
+        return URI.create(RouteInterface.verifySessionUrl);
     }
 
 }

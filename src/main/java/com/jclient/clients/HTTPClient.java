@@ -31,23 +31,26 @@ public class HTTPClient {
     private static final ObjectMapper objectMapper = new ObjectMapper()
             .registerModule(new JavaTimeModule())
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+
+
     public SignInResponse signIn(SignInRequest payload) throws IOException, InterruptedException {
-        String jsonRequest = objectMapper.writeValueAsString(payload);
+        String jsonPayload = objectMapper.writeValueAsString(payload);
 
 
 
 
-        System.out.println(jsonRequest);
-        System.out.println(Route.signIn().toString());
+        System.out.println("[request] " + jsonPayload);
+        System.out.println("[route] " + Route.signIn().toString());
 
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(Route.signIn().toString()))
                 .header("Accept", "application/json")
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(jsonRequest))
+                .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
                 .build();
 
-        System.out.println(request);
+        System.out.println("[request] " + request);
 
 
         var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
