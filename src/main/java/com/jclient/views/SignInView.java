@@ -147,12 +147,16 @@ public class SignInView {
             SignInRequest payload = new SignInRequest(username, password);
             try {
                 SignInResponse signInResponse = httpClient.signIn(payload);
-                JOptionPane.showMessageDialog(frame,
-                        "Bienvenido " + username,
-                        "Éxito",
-                        JOptionPane.INFORMATION_MESSAGE);
-                frame.dispose();
-                new MenuView();
+
+                if (signInResponse.token() != null) {
+                    JOptionPane.showMessageDialog(frame,
+                            "Bienvenido " + username,
+                            "Éxito",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    frame.dispose();
+                    new MenuView();
+                }
+
             } catch (IOException | InterruptedException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(frame,
