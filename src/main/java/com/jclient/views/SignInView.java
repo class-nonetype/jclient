@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.prefs.Preferences;
 
 public class SignInView {
 
@@ -173,6 +174,16 @@ public class SignInView {
             SignInRequest payload = new SignInRequest(username, password);
             try {
                 SignInResponse signInResponse = httpClient.signIn(payload);
+
+                Preferences prefs = Preferences.userNodeForPackage(SignInView.class);
+                if (rememberMe.isSelected()) {
+                    prefs.put("userAccessToken", signInResponse.token());
+                    prefs.putBoolean("rememberMe", true);
+                } else {
+                    prefs.remove("userAccessToken");
+                    prefs.putBoolean("rememberMe", false);
+                }
+
                 JOptionPane.showMessageDialog(frame,
                         "Bienvenido " + username + (rememberMe.isSelected() ? "\nSesión guardada." : ""),
                         "Éxito",
