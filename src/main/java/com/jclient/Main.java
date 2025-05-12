@@ -13,10 +13,14 @@ public class Main {
         try {
             HTTPClient httpClient = new HTTPClient();
             Preferences prefs = Preferences.userNodeForPackage(SignInView.class);
-            String token = prefs.get("userAccessToken", null);
+            String userAccessToken = prefs.get("userAccessToken", null);
 
-            if (token != null) {
-                SessionResponse session = httpClient.verifySession(token);
+
+            if (userAccessToken != null) {
+                // Se realiza un POST con el token almacenado,
+                // se verifica la validez en el endpoint 'authentication/verify/session'
+                SessionResponse session = httpClient.verifySession(userAccessToken);
+
                 if (session != null) {
                     new MenuView();
                 } else {

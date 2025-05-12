@@ -237,7 +237,7 @@ public class SignInView {
         });
 
         // Opcional
-        rememberMe.setVisible(false);
+        rememberMe.setVisible(true);
         if (!rememberMe.isShowing()){
             signInButton.setBounds(400, 250, 240, 42);
 

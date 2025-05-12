@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record SessionResponse(
-        @JsonProperty("userAccountID") String userAccountID,
-        @JsonProperty("date") String date,
-        @JsonProperty("accessToken") String token
+        @JsonProperty("userAccountID")  String userAccountID,
+        @JsonProperty("date")           String date,
+        @JsonProperty("accessToken")    String token
 ) {}
 
