@@ -17,9 +17,13 @@ public class Main {
 
 
             if (userAccessToken != null) {
-                // Se realiza un POST con el token almacenado,
-                // se verifica la validez en el endpoint 'authentication/verify/session'
+                /*
+                Se realiza un POST con el token almacenado,
+                se verifica su validez mediante el endpoint 'authentication/verify/session?Authorization=...'
+                */
                 SessionResponse session = httpClient.verifySession(userAccessToken);
+                System.out.println(session.date() + ": " + session.userAccountID());
+                System.out.println(session.token());
 
                 if (session != null) {
                     new MenuView();
@@ -33,6 +37,7 @@ public class Main {
 
         } catch (Exception e) {
             new SignInView();
+            System.out.println(e);
             throw new RuntimeException(e);
         }
 

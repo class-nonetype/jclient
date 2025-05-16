@@ -46,7 +46,7 @@ public interface ViewInterface {
     Color sidebarButtonHoverOverlay= new Color(0, 0, 0, 20); // overlay al hover
 
     // Colores auxiliares
-    Color orangeColor              = new Color(214, 137, 16);
+    Color orangeColor              = new Color(230, 126, 34);
     Color blueColor                = new Color(36, 114, 200);
     Color blackColor               = new Color(33, 33, 33);
     Color whiteColor               = new Color(250, 250, 250);

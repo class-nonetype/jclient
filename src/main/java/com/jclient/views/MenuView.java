@@ -244,7 +244,7 @@ public class MenuView {
 
         // 2) Generar y mostrar 5000 registros en la tabla flat
         String[] columnNames = { "ID", "Nombre", "Email", "Teléfono" };
-        int rowCount = 100000;
+        int rowCount = 1000000;
         Object[][] data = new Object[rowCount][columnNames.length];
         for (int i = 0; i < rowCount; i++) {
             data[i][0] = i + 1;
